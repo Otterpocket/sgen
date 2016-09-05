@@ -11,7 +11,7 @@ require 'optparse'
 #/ -h or --help For this help text
 #/ Example: ruby sgen --model Animal
 
-def controller_tpl(n)
+def controller_template(n)
 %{<?php
 
 class #{n.capitalize}s_Controller extends Controller {
@@ -20,23 +20,23 @@ class #{n.capitalize}s_Controller extends Controller {
 }
 end
 
-def page_tpl(n)
+def page_template(n)
 %{<?php
 
-class #{n}sPage extends Page {
+class #{n.capitalize}sPage extends Page {
 
 }
 
-class #{n}sPage_Controller extends Page_Controller {
+class #{n.capitalize}sPage_Controller extends Page_Controller {
 
 }
 }
 end
 
-def model_tpl(n)
+def model_template(n)
 %{<?php
 
-class #{n} extends DataObject {
+class #{n.capitalize} extends DataObject {
 
     private static $db = [];
 
@@ -44,13 +44,13 @@ class #{n} extends DataObject {
 }
 end
 
-def admin_tpl(n)
+def admin_template(n)
 %{<?php
 
-class #{n}Admin extends ModelAdmin {
+class #{n.capitalize}Admin extends ModelAdmin {
 
     private static $managed_models = [
-        '#{n}'
+        '#{n.capitalize}'
     ];
 
     private static $url_segment = '#{n.downcase}s';
@@ -63,19 +63,27 @@ end
 file = __FILE__
 ARGV.options do |opts|
   opts.on('-c name', '--controller name') do |name|
-    File.open("app/controllers/#{name.capitalize}s.php", 'w') { |f| f.write(controller_tpl(name)) }
+    File.open("app/controllers/#{name.capitalize}s.php", 'w') do |f|
+        f.write(controller_template(name))
+    end
   end
 
   opts.on('-p name', '--page name')  do |name|
-    File.open("app/pages/#{name.capitalize}sPage.php", 'w') { |f| f.write(page_tpl(name)) }
+    File.open("app/pages/#{name.capitalize}sPage.php", 'w') do |f|
+        f.write(page_template(name))
+    end
   end
 
   opts.on('-m name', '--model name')  do |name|
-    File.open("app/models/#{name.capitalize}.php", 'w') { |f| f.write(model_tpl(name)) }
+    File.open("app/models/#{name.capitalize}.php", 'w') do |f|
+        f.write(model_template(name))
+    end
   end
 
   opts.on('-a name', '--admin name')  do |name|
-    File.open("app/admin/#{name.capitalize}Admin.php", 'w') { |f| f.write(admin_tpl(name)) }
+    File.open("app/admin/#{name.capitalize}Admin.php", 'w') do |f|
+        f.write(admin_template(name))
+    end
   end
 
   opts.on_tail('-h', '--help') { exec "grep ^#/<'#{file}'|cut -c4-" }
